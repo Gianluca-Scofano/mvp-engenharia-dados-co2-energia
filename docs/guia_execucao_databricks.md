@@ -63,8 +63,10 @@ As evidências vêm de duas fontes:
 1. **Print da tela do notebook `99`**, com as 7 etapas concluídas e a duração de cada uma.
 2. **Exportações HTML das etapas.** Cada página aberta pelo link **"Notebook job #..."** foi exportada em HTML. Os arquivos estão
    em [`docs/evidencias/`](evidencias/) e abrem em qualquer navegador (baixe o `.html` e abra localmente). As imagens de
-   `docs/img` mostram as saídas reais das células, extraídas dessas exportações, sem nenhuma alteração nos valores. O e-mail do
-   usuário foi ocultado onde aparecia (caminho dos notebooks).
+   `docs/img` mostram as saídas reais das células, extraídas dessas exportações, sem nenhuma alteração nos valores.
+
+A única edição foi ocultar o e-mail do usuário, substituído por "(e-mail oculto)" nos dois lugares onde aparecia: no caminho dos
+notebooks, no print do `99`, e no campo *Owner* da tabela, na exportação da etapa 06.
 
 | Imagem | Origem | O que mostra |
 |---|---|---|
