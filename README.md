@@ -70,6 +70,7 @@ flowchart LR
 | [`05_modelagem_gold`](notebooks/05_modelagem_gold.py) | Modelagem (4.3) | Dimensões e fatos, chaves (PK/FK), restrições CHECK, testes de integridade e reconciliação |
 | [`06_catalogo_dados`](notebooks/06_catalogo_dados.py) | Catálogo (4.3) | Comentários de tabela e coluna no Unity Catalog, com domínio e linhagem; tabela `governanca.catalogo_dados` |
 | [`07_analise`](notebooks/07_analise.py) | Análise (4.5) | Consultas SQL sobre a gold, gráficos e discussão das perguntas P1 a P7 |
+| [`99_executar_pipeline_completo`](notebooks/99_executar_pipeline_completo.py) | Orquestração (4.4) | Executa os notebooks 01 a 07 em sequência com um único *Run all* e mostra o status e a duração de cada etapa |
 
 Os notebooks estão no formato de código-fonte do Databricks (`.py`) e rodam direto de uma **Git folder** conectada a este repositório.
 
@@ -417,8 +418,9 @@ Decisões que valem para todos os notebooks:
   - os logs de governança são `append`.
 - **Fail fast:** se algum teste de qualidade da silver ou da gold falhar, o notebook é interrompido e a camada seguinte não é
   recarregada com dado ruim.
-- **Orquestração:** os notebooks podem ser encadeados em um **Job** do Databricks (Lakeflow Jobs), uma tarefa por notebook, com
-  dependências `02 → 03 → 04 → 05 → 06 → 07`.
+- **Orquestração:** o notebook [`99_executar_pipeline_completo`](notebooks/99_executar_pipeline_completo.py) executa as etapas `01` a
+  `07` em sequência (`dbutils.notebook.run`) e interrompe o pipeline na primeira falha. Os mesmos notebooks também podem ser
+  encadeados em um **Job** do Databricks (Lakeflow Jobs), uma tarefa por notebook.
 
 ### 4.2 Transformações (o que, por que e impacto)
 
@@ -447,8 +449,8 @@ Os notebooks exibem a contagem de linhas antes e depois de cada etapa (log de tr
 ![Tabelas gold e testes](docs/img/06_gold_testes.png)
 *Notebook 05: tabelas gold criadas, restrições aplicadas e testes de integridade/reconciliação.*
 
-![Job do pipeline](docs/img/11_job_pipeline.png)
-*Execução do pipeline completo como Job do Databricks (uma tarefa por notebook).*
+![Pipeline completo](docs/img/11_pipeline_completo.png)
+*Notebook 99: pipeline completo (01 → 07) executado em sequência no Databricks, com status e duração de cada etapa.*
 
 ---
 
@@ -717,14 +719,14 @@ o total mundial com desvio de 0,0009%, e os continentes batem 100% com os agrega
 1. **Criar a conta:** crie uma conta gratuita no [Databricks Free Edition](https://www.databricks.com/learn/free-edition).
 2. **Conectar o repositório:** em **Workspace → Create → Git folder**, cole a URL deste repositório. Por ser público, ele não precisa
    de credenciais para o clone.
-3. **Executar os notebooks em ordem:** abra cada notebook da pasta `notebooks/` e use **Run all** (computação *Serverless*), na
-   sequência `01_setup_ambiente` → `02_coleta_bronze` → `03_qualidade_diagnostico` → `04_transformacao_silver` → `05_modelagem_gold` →
-   `06_catalogo_dados` → `07_analise`.
+3. **Executar o pipeline:** abra `notebooks/99_executar_pipeline_completo` e use **Run all** (computação *Serverless*). Ele roda
+   as etapas `01` a `07` em sequência. Também é possível abrir cada notebook e usar **Run all** na ordem `01_setup_ambiente` →
+   `02_coleta_bronze` → `03_qualidade_diagnostico` → `04_transformacao_silver` → `05_modelagem_gold` → `06_catalogo_dados` →
+   `07_analise`.
    - Se o `02` não conseguir baixar os arquivos (sem acesso à internet), faça o upload manual dos 5 arquivos, a partir das URLs
      listadas em `00_configuracao`, para **Catalog → mvp_co2_energia → bronze → Volumes → arquivos_brutos → Upload to this volume**
      e rode o `02` de novo.
    - Se o workspace não permitir criar catálogos, troque `CATALOGO = "workspace"` em `00_configuracao`.
-4. **Job (opcional):** em **Jobs & Pipelines → Create job**, crie uma tarefa por notebook (02 a 07), cada uma dependendo da anterior.
 
 O guia detalhado, com a lista de evidências (prints), está em [`docs/guia_execucao_databricks.md`](docs/guia_execucao_databricks.md).
 
@@ -740,7 +742,8 @@ O guia detalhado, com a lista de evidências (prints), está em [`docs/guia_exec
 │   ├── 04_transformacao_silver.py
 │   ├── 05_modelagem_gold.py
 │   ├── 06_catalogo_dados.py
-│   └── 07_analise.py
+│   ├── 07_analise.py
+│   └── 99_executar_pipeline_completo.py
 └── docs/
     ├── catalogo_dados.md              ← catálogo de dados completo (transcrito do Unity Catalog)
     ├── guia_execucao_databricks.md    ← passo a passo de execução e checklist de evidências
