@@ -689,42 +689,74 @@ pipeline.
 
 ## 7. Autoavaliação
 
-**Objetivos.** O objetivo foi atingido: as 7 perguntas definidas antes da coleta foram respondidas, sem remover nenhuma. O MVP
-entrega o ciclo completo:
+### 7.1 Os objetivos foram atingidos?
 
-- coleta automatizada e rastreável, com versão fixada, hash e log;
-- três camadas persistidas no Unity Catalog;
+Sim. O objetivo definido no início do trabalho (seção 1) tinha duas partes, e as duas foram cumpridas.
+
+**1. Responder ao problema de negócio.** As 7 perguntas da seção 1.2 foram respondidas com consultas à camada gold, sem remover
+nenhuma. Algumas respostas têm ressalvas, que vêm da cobertura dos dados e estão declaradas na análise:
+
+| Pergunta | Situação | Ressalva |
+|---|---|---|
+| P1 · Maiores emissores | Respondida | — |
+| P2 · Per capita e Brasil | Respondida | Ranking per capita só com países de ≥ 1 milhão de habitantes, para evitar distorção por microterritórios |
+| P3 · Crescer sem emitir | Respondida | Período de 2000 a 2022, porque o PIB só vai até 2022; emissões por consumo para cerca de 120 países |
+| P4 · Transição energética | Respondida | Matriz detalhada por fonte para 79 países; a posição do Brasil (7º) é entre esses 79 |
+| P5 · Energia limpa × intensidade | Respondida | Correlação não prova causalidade; o caso de Singapura mostra um limite do indicador |
+| P6 · Desmatamento no Brasil | Respondida | Emissões de uso da terra são estimativas de modelo, com incerteza maior, e sem abertura por estado ou bioma |
+| P7 · Geografia das emissões | Respondida | — |
+
+**2. Entregar uma base confiável, consolidada e documentada** para a equipe de análise ESG. O pipeline rodou de ponta a ponta no
+Databricks Free Edition (7 etapas em cerca de 11,5 minutos) e entregou:
+
+- coleta rastreável, com versão fixada por commit, SHA-256 conferido e log de ingestão;
+- camadas bronze, silver e gold persistidas em Delta no Unity Catalog;
 - modelo dimensional com chaves e restrições;
-- catálogo de dados documentado no próprio Unity Catalog;
-- qualidade verificada antes e depois das transformações;
-- análise que responde ao problema.
+- 177 colunas documentadas no próprio Unity Catalog;
+- 26 testes de qualidade (12 na silver e 14 na gold), todos aprovados.
 
-O ponto de que mais me orgulho é que os números são reproduzíveis e **validados contra os totais oficiais**: os países reconstituem
-o total mundial com desvio de 0,0009%, e os continentes batem 100% com os agregados da OWID.
+A melhor medida de confiabilidade é a **validação contra os totais oficiais**: os países reconstituem o total mundial com desvio
+de 0,0009%, e os continentes batem 100% com os agregados publicados pela OWID.
 
-**Dificuldades.**
+### 7.2 Dificuldades encontradas
 
 - **Definir o que é um "país":** foi o maior desafio de modelagem. A base mistura países, continentes, grupos de renda e quase cem
-  agregados definidos por fontes diferentes. Só depois de medir o impacto (a soma ingênua dá 6,4× o total mundial) ficou claro que a
-  classificação das localidades era a transformação mais importante do pipeline. A solução foi usar a definição oficial de regiões da
-  própria OWID como terceira fonte.
-- **Construir a análise em cima do dado real:** entender que a soma das fontes de energia não fecha com o total, que a abertura da
-  eletricidade é incompleta antes de 2000 e que a bioenergia aparece de duas formas exigiu investigar a base antes de decidir cada
-  tratamento.
-- **Problema técnico no Spark:** um filtro que referenciava dezenas de colunas renomeadas ao mesmo tempo fazia o otimizador do
-  Spark estourar a memória na escrita da tabela. Resolvi calculando o indicador sobre as colunas originais, antes da renomeação.
-- **Ambiente gratuito:** trabalhar com as restrições do Databricks Free Edition (computação serverless, recursos limitados) e dentro
-  do prazo da entrega.
+  agregados definidos por fontes específicas, e a soma ingênua das linhas dá 6,4 vezes o total mundial. A classificação das
+  localidades, com a definição oficial de regiões da OWID como terceira fonte, virou a transformação mais importante do pipeline.
+- **Inconsistências da base de energia:** a soma das fontes não fecha com o total, a abertura da eletricidade é incompleta antes de
+  2000 e a bioenergia aparece de duas formas. Cada caso exigiu investigar a base antes de decidir o tratamento.
+- **Limite do otimizador do Spark:** nos testes feitos antes da execução no Databricks, um filtro que referenciava dezenas de
+  colunas renomeadas fazia o otimizador estourar a memória ao gravar a tabela silver. A solução foi calcular o indicador sobre as
+  colunas originais, antes da renomeação.
+- **Particularidades do Databricks Free Edition:**
+  - a opção de conectar o repositório (*Git folder*) não aparece no menu da raiz do Workspace, só dentro da pasta do usuário; por
+    isso o guia de execução documenta também a importação dos notebooks;
+  - chaves primárias e estrangeiras são apenas informativas e não bloqueiam a escrita, então a integridade referencial precisou
+    ser garantida por testes;
+  - cada etapa do orquestrador roda como uma execução separada, então as evidências foram reunidas exportando a página de cada
+    execução em HTML;
+  - a etapa de catálogo, que calcula os domínios e aplica cerca de 190 comentários um a um, levou cerca de 4 dos 11,5 minutos do
+    pipeline.
 
-**Trabalhos futuros.**
+### 7.3 Trabalhos futuros
 
-- **Carga incremental:** detectar novas versões da OWID (novo commit) e usar `MERGE`/Auto Loader, em vez de recarregar tudo.
-- **Orquestração e alertas:** agendar o Job e enviar alerta quando algum teste de qualidade falhar.
-- **Dados do Brasil por setor e estado:** incorporar o [SEEG](https://seeg.eco.br/) e o [PRODES/INPE](http://terrabrasilis.dpi.inpe.br/)
-  para abrir as emissões brasileiras por setor, estado e bioma, aprofundando a pergunta P6.
-- **Dashboard:** publicar um painel no Databricks (AI/BI Dashboards) sobre a camada gold.
-- **Histórico de localidades:** tratar mudanças de nome e código como dimensão de variação lenta (SCD tipo 2).
-- **Contratos de dados:** alertar automaticamente quando a OWID criar uma nova localidade que não se encaixe na classificação.
+**Para enriquecer o problema:**
+
+- **Outros gases de efeito estufa:** ampliar a análise do CO₂ para todos os gases de efeito estufa. Metano e óxido nitroso já estão
+  na base e somam 28% das emissões de gases de efeito estufa do Brasil em 2024.
+- **Brasil por setor, estado e bioma:** incorporar o [SEEG](https://seeg.eco.br/) e o [PRODES/INPE](http://terrabrasilis.dpi.inpe.br/)
+  para abrir as emissões brasileiras, aprofundando a pergunta P6.
+- **Painel:** publicar um dashboard no Databricks (AI/BI Dashboards) sobre a camada gold, para a equipe ESG consultar os
+  indicadores sem escrever SQL.
+
+**Para evoluir a solução:**
+
+- **Carga incremental:** detectar novas versões da OWID (novo commit) e usar `MERGE`, em vez de recarregar tudo.
+- **Orquestração e alertas:** transformar o notebook `99` em um Job agendado, com alerta quando algum teste de qualidade falhar.
+- **Catálogo mais rápido:** gravar os comentários já no `CREATE TABLE`, calculando os domínios antes da escrita, em vez de aplicar
+  um `ALTER` por coluna.
+- **Histórico e contratos de dados:** tratar mudanças de nome e código das localidades como dimensão de variação lenta (SCD tipo 2)
+  e alertar quando a OWID criar uma localidade que não se encaixe na classificação.
 
 ---
 
