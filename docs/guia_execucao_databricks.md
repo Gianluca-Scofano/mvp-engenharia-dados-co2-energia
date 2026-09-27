@@ -79,7 +79,7 @@ notebooks, no print do `99`, e no campo *Owner* da tabela, na exportação da et
 | `07_modelo_er.png` | Etapa 05, seção **3. Restrições** | As 22 restrições (PK, FK, NOT NULL e CHECK) aplicadas |
 | `01_catalogo_schemas.png` | Etapa 06, seção **3. Aplicação dos comentários** | 11 tabelas documentadas, 177 colunas e nenhuma sem documentação |
 | `08_catalogo_comentarios.png` | Etapa 06, seção **4. Evidência** | `DESCRIBE TABLE EXTENDED` com os comentários lidos do Unity Catalog |
-| `p1_...` a `p7_...` | Etapa 07, gráfico de cada pergunta | Os gráficos da análise |
+| `p1_...` a `p7_...` | Etapa 07, gráfico de cada pergunta (P1 a P7) | Os 7 gráficos da análise, como o Databricks os gerou |
 
 Prints opcionais do **Catalog Explorer** (menu **Catalog**) complementam as evidências: a árvore do catálogo `mvp_co2_energia`
 com os schemas e a aba **Overview** de `gold.fato_emissoes_anual`, com os comentários das colunas.
@@ -88,8 +88,8 @@ com os schemas e a aba **Overview** de `gold.fato_emissoes_anual`, com os coment
 
 ## Parte 4 · Revisão final e entrega
 
-- [ ] O pipeline rodou no Databricks sem erro (7 etapas OK no notebook 99).
-- [ ] Nenhuma imagem "PRINT PENDENTE" no README (os gráficos da etapa 07 também).
+- [x] O pipeline rodou no Databricks sem erro (7 etapas OK no notebook 99).
+- [x] Nenhuma imagem "PRINT PENDENTE" no README (os gráficos da etapa 07 também).
 - [ ] A seção **7. Autoavaliação** do README foi revisada com as suas palavras.
-- [ ] O repositório está **público**.
+- [x] O repositório está **público**.
 - [ ] O link do repositório foi postado no fórum de entrega do MVP.

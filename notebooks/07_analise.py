@@ -588,9 +588,9 @@ plt.show()
 # MAGIC 1.060 Mt em 2011 coincide com o período de forte redução do desmatamento (2004–2012). O movimento se inverte a partir de 2018,
 # MAGIC chegando a 1.653 Mt em 2022.
 # MAGIC
-# MAGIC A conclusão prática é que **a queda do desmatamento entre 2003 e 2011 (cerca de −1.900 Mt/ano) foi quase quatro vezes maior do que tudo
-# MAGIC o que o Brasil emite hoje com combustíveis fósseis**. Nenhuma medida no setor de energia tem esse potencial. Com o uso da terra
-# MAGIC incluído, o Brasil é o 5º maior emissor anual e o 4º no acumulado (139 bilhões de t; 5,1% do total mundial).
+# MAGIC A conclusão prática é que **a queda do desmatamento entre 2003 e 2011 (redução de cerca de 1.940 Mt/ano) foi cerca de quatro vezes
+# MAGIC maior do que tudo o que o Brasil emite hoje com combustíveis fósseis**. Nenhuma medida no setor de energia tem esse potencial.
+# MAGIC Com o uso da terra incluído, o Brasil é o 5º maior emissor anual e o 4º no acumulado (139 bilhões de t; 5,1% do total mundial).
 
 # COMMAND ----------
 

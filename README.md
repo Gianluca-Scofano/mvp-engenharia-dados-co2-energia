@@ -513,6 +513,9 @@ internacional, já chegam a 99,98% do Mundo; a diferença de 8 Mt é o Kosovo, q
 As consultas ([`07_analise`](notebooks/07_analise.py)) usam **apenas a camada gold**. O notebook traz o SQL, a tabela de resultado
 e o gráfico de cada pergunta. Abaixo, a resposta e a discussão de cada uma.
 
+Os gráficos são os gerados pelo notebook `07` na execução do Databricks, extraídos sem alteração da exportação
+[`docs/evidencias/07_analise.html`](docs/evidencias/07_analise.html), que também traz o SQL e as tabelas de resultado de cada pergunta.
+
 ### P1 · Quem mais emite hoje e quem mais emitiu na história?
 
 As emissões são **extremamente concentradas**. Em 2024, **China (31,8%), EUA (12,7%) e Índia (8,3%) respondem por 52,8%** do CO₂
@@ -599,7 +602,7 @@ bagaço de cana).
 
 **Sim: a correlação é forte e negativa (r = −0,67; 79 países em 2024).**
 
-- **Matrizes limpas:** Islândia, Suécia, Noruega, Suíça e França emitem de 60 a 105 g de CO₂ por kWh.
+- **Matrizes limpas:** Islândia, Suécia, Noruega, Suíça e França emitem de 61 a 105 g de CO₂ por kWh.
 - **Matrizes baseadas em carvão:** Cazaquistão (333 g/kWh), África do Sul (323), Índia (282) e China (251) estão no outro extremo.
 - **Brasil:** 123 g/kWh, exatamente sobre a linha de tendência.
 
@@ -629,8 +632,8 @@ fósseis** (483 Mt). Elas somam **76,8% do CO₂ brasileiro**. Para comparação
 A série mostra o pico em **2003 (3.000 Mt)**, no auge do desmatamento na Amazônia. Em 2011 as emissões caíram para cerca de
 1.060 Mt, o que coincide com o período de forte redução do desmatamento. A partir de 2018 elas voltam a subir (1.653 Mt em 2022).
 
-**A queda de 2003 a 2011 (cerca de −1.900 Mt/ano) foi quase quatro vezes maior do que tudo o que o Brasil emite hoje com
-combustíveis fósseis.** Com o uso da terra incluído, o Brasil é o 5º maior emissor anual e o 4º no acumulado.
+**A queda de 2003 a 2011 (redução de cerca de 1.940 Mt/ano) foi cerca de quatro vezes maior do que tudo o que o Brasil emite
+hoje com combustíveis fósseis.** Com o uso da terra incluído, o Brasil é o 5º maior emissor anual e o 4º no acumulado.
 
 ![P6](docs/img/p6_uso_da_terra_brasil.png)
 
