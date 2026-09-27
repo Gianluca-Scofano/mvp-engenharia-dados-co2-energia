@@ -1,7 +1,8 @@
-# MVP · Engenharia de Dados: emissões de CO₂ e transição energética
+# MVP de Engenharia de Dados: emissões de CO₂ e transição energética
 
-**PUC-Rio · Pós-graduação · MVP de Engenharia de Dados**<br>
-**Aluno:** Gianluca Scofano · **Data:** setembro de 2026<br>
+**PUC-Rio, Pós-graduação: MVP de Engenharia de Dados**<br>
+**Aluno:** Gianluca Scofano<br>
+**Data:** setembro de 2026<br>
 **Plataforma:** Databricks Free Edition (Unity Catalog + Delta Lake + computação serverless)<br>
 **Fonte dos dados:** [Our World in Data](https://ourworldindata.org/) (CO₂, energia e definição de regiões), licença CC BY 4.0
 
@@ -49,20 +50,20 @@ flowchart LR
         F3["regions.yml"]
         F4["codebooks (CSV)"]
     end
-    subgraph DBX["Databricks Free Edition · Unity Catalog · catálogo mvp_co2_energia"]
+    subgraph DBX["Databricks Free Edition (Unity Catalog, catálogo mvp_co2_energia)"]
         V["Volume<br/>bronze.arquivos_brutos"]
         B["BRONZE<br/>5 tabelas Delta<br/>dado como veio (texto)"]
-        S["SILVER<br/>regioes_owid · localidades<br/>emissoes_co2 · energia"]
+        S["SILVER<br/>regioes_owid, localidades<br/>emissoes_co2, energia"]
         G["GOLD<br/>3 dimensões + 2 fatos<br/>(esquema em constelação)"]
         GOV["GOVERNANÇA<br/>controle_ingestao<br/>resultados_qualidade<br/>catalogo_dados"]
     end
     A["ANÁLISE<br/>SQL + gráficos<br/>P1 a P7"]
-    F1 & F2 & F3 & F4 -- "02 · download + SHA-256" --> V --> B
-    B -- "03 · diagnóstico de qualidade" --> GOV
-    B -- "04 · limpeza, tipagem e classificação" --> S
-    S -- "05 · modelo dimensional + testes" --> G
-    G -- "06 · catálogo de dados" --> GOV
-    G -- "07 · perguntas de negócio" --> A
+    F1 & F2 & F3 & F4 -- "02: download + SHA-256" --> V --> B
+    B -- "03: diagnóstico de qualidade" --> GOV
+    B -- "04: limpeza, tipagem e classificação" --> S
+    S -- "05: modelo dimensional + testes" --> G
+    G -- "06: catálogo de dados" --> GOV
+    G -- "07: perguntas de negócio" --> A
 ```
 
 | Notebook | Etapa | O que faz |
@@ -124,7 +125,7 @@ Ela as publica com país e ano harmonizados. As bases escolhidas atendem diretam
 |---|---|---|---|
 | [owid/co2-data](https://github.com/owid/co2-data) | `owid-co2-data.csv` | Emissões de CO₂ (por origem, per capita, acumuladas, por consumo, uso da terra), outros gases, população e PIB | P1, P2, P3, P5, P6, P7 |
 | [owid/energy-data](https://github.com/owid/energy-data) | `owid-energy-data.csv` | Consumo de energia primária e geração de eletricidade por fonte | P4, P5 |
-| [owid/etl · regions](https://github.com/owid/etl/blob/master/etl/steps/data/garden/regions/2023-01-01/regions.yml) | `regions.yml` | Definição oficial de regiões: códigos, países históricos, composição dos continentes | P7 (e a classificação das localidades) |
+| [owid/etl (regions)](https://github.com/owid/etl/blob/master/etl/steps/data/garden/regions/2023-01-01/regions.yml) | `regions.yml` | Definição oficial de regiões: códigos, países históricos, composição dos continentes | P7 (e a classificação das localidades) |
 | owid/co2-data e owid/energy-data | `owid-*-codebook.csv` | Dicionários oficiais das colunas (descrição, unidade, fonte) | catálogo de dados |
 
 **Versão fixada.** A OWID atualiza os arquivos periodicamente. Por isso, as URLs usadas apontam para um **commit específico** de
@@ -318,7 +319,7 @@ O catálogo é registrado **no próprio Unity Catalog**, como comentário de cad
 A linhagem entre tabelas também é registrada automaticamente pelo Unity Catalog (aba *Lineage*). Tudo é consolidado na tabela
 consultável `governanca.catalogo_dados`, com **177 colunas documentadas e nenhuma sem documentação**.
 
-➡️ **Catálogo completo transcrito (silver, gold e governança): [`docs/catalogo_dados.md`](docs/catalogo_dados.md)**
+O catálogo completo (silver, gold e governança) está transcrito em [`docs/catalogo_dados.md`](docs/catalogo_dados.md).
 
 Resumo do catálogo da camada gold:
 
@@ -460,7 +461,7 @@ totais publicados pela OWID) com status OK.*
 
 ![Pipeline completo](docs/img/11_pipeline_completo.png)
 *Notebook 99 no Databricks (print da tela): pipeline completo (01 → 07) executado em sequência, com status e duração de cada
-etapa. O e-mail do usuário foi ocultado no caminho dos notebooks.*
+etapa. O e-mail da conta foi ocultado no caminho dos notebooks.*
 
 ---
 
@@ -516,7 +517,7 @@ e o gráfico de cada pergunta. Abaixo, a resposta e a discussão de cada uma.
 Os gráficos são os gerados pelo notebook `07` na execução do Databricks, extraídos sem alteração da exportação
 [`docs/evidencias/07_analise.html`](docs/evidencias/07_analise.html), que também traz o SQL e as tabelas de resultado de cada pergunta.
 
-### P1 · Quem mais emite hoje e quem mais emitiu na história?
+### P1 - Quem mais emite hoje e quem mais emitiu na história?
 
 As emissões são **extremamente concentradas**. Em 2024, **China (31,8%), EUA (12,7%) e Índia (8,3%) respondem por 52,8%** do CO₂
 fóssil mundial, e os 10 maiores somam 68,9%. No acumulado desde 1750 a liderança muda: **os EUA respondem sozinhos por 23,5%** de
@@ -533,9 +534,9 @@ emissor fóssil em 2024 e o 19º no acumulado.
 
 ![P1](docs/img/p1_maiores_emissores.png)
 
-### P2 · O ranking muda com a população? Onde está o Brasil?
+### P2 - O ranking muda com a população? Onde está o Brasil?
 
-**Muda completamente.** No per capita (países com ≥ 1 milhão de habitantes), o topo é de **petroestados**: Catar (41,3 t), Kuwait
+Muda completamente. No per capita (países com ≥ 1 milhão de habitantes), o topo é de **petroestados**: Catar (41,3 t), Kuwait
 (26,2 t), Bahrein, Trinidad e Tobago, Arábia Saudita e Emirados. Os EUA (14,2 t) são o 9º. A China, 1ª no total, é a 19ª per capita
 (8,7 t), e a Índia, 3ª no total, é a 91ª (2,2 t). A média mundial é de 4,7 t.
 
@@ -551,9 +552,9 @@ Só com combustíveis fósseis, o Brasil parece um emissor modesto. Com o desmat
 
 ![P2](docs/img/p2_per_capita.png)
 
-### P3 · É possível crescer sem emitir mais?
+### P3 - É possível crescer sem emitir mais?
 
-**Sim, mas ainda não é a regra entre os grandes.** Entre 2000 e 2022, dos 153 países analisados:
+Sim, mas ainda não é a regra entre os grandes. Entre 2000 e 2022, dos 153 países analisados:
 
 | Classificação | Países | Participação no CO₂ do grupo em 2022 |
 |---|---:|---:|
@@ -562,7 +563,7 @@ Só com combustíveis fósseis, o Brasil parece um emissor modesto. Com o desmat
 | Acoplado (CO₂ cresce tanto quanto o PIB ou mais) | 34 | 1,9% |
 | PIB em queda | 5 | 0,4% |
 
-**Sete dos 20 maiores emissores tiveram desacoplamento absoluto:**
+Sete dos 20 maiores emissores tiveram desacoplamento absoluto:
 
 | País | PIB | CO₂ |
 |---|---:|---:|
@@ -582,9 +583,9 @@ cresceu 117% e o CO₂ 47%: a economia ficou menos intensiva em carbono, mas as 
 
 ![P3](docs/img/p3_desacoplamento.png)
 
-### P4 · A transição energética está acontecendo?
+### P4 - A transição energética está acontecendo?
 
-**Está, mas devagar e sem substituir os fósseis.**
+Está, mas devagar e sem substituir os fósseis.
 
 - **Participação de baixo carbono na energia primária mundial:** 6,3% em 1965, 14,0% em 2000 e **18,7% em 2024**.
 - **Virada recente:** o indicador ficou estagnado entre 2000 e 2015 e ganhou 4,4 p.p. desde 2015, puxado por solar e eólica
@@ -598,9 +599,9 @@ bagaço de cana).
 
 ![P4](docs/img/p4_transicao_energetica.png)
 
-### P5 · Mais energia limpa significa energia menos intensiva em carbono?
+### P5 - Mais energia limpa significa energia menos intensiva em carbono?
 
-**Sim: a correlação é forte e negativa (r = −0,67; 79 países em 2024).**
+Sim: a correlação é forte e negativa (r = −0,67; 79 países em 2024).
 
 - **Matrizes limpas:** Islândia, Suécia, Noruega, Suíça e França emitem de 61 a 105 g de CO₂ por kWh.
 - **Matrizes baseadas em carvão:** Cazaquistão (333 g/kWh), África do Sul (323), Índia (282) e China (251) estão no outro extremo.
@@ -616,9 +617,9 @@ As exceções são informativas:
 
 ![P5](docs/img/p5_baixo_carbono_intensidade.png)
 
-### P6 · Qual é o peso do desmatamento nas emissões do Brasil?
+### P6 - Qual é o peso do desmatamento nas emissões do Brasil?
 
-**É o centro do problema.** Em 2024, as emissões por mudança no uso da terra foram de **1.600 Mt de CO₂, 3,3 vezes as emissões
+É o centro do problema. Em 2024, as emissões por mudança no uso da terra foram de **1.600 Mt de CO₂, 3,3 vezes as emissões
 fósseis** (483 Mt). Elas somam **76,8% do CO₂ brasileiro**. Para comparação:
 
 | Localidade | Peso do uso da terra no CO₂ total (2024) |
@@ -637,9 +638,9 @@ hoje com combustíveis fósseis.** Com o uso da terra incluído, o Brasil é o 5
 
 ![P6](docs/img/p6_uso_da_terra_brasil.png)
 
-### P7 · Como mudou a geografia das emissões?
+### P7 - Como mudou a geografia das emissões?
 
-**O centro das emissões migrou do Atlântico Norte para a Ásia:**
+O centro das emissões migrou do Atlântico Norte para a Ásia:
 
 | Ano | Distribuição do CO₂ fóssil dos países |
 |---|---|
@@ -668,7 +669,7 @@ pipeline.
    - suas emissões fósseis per capita são a metade da média mundial;
    - mesmo assim, está entre os cinco maiores emissores por causa do desmatamento, que responde por 77% do seu CO₂.
 
-   **Para o Brasil, política climática é, antes de tudo, política de uso da terra.**
+   Para o Brasil, política climática é, antes de tudo, política de uso da terra.
 
 **Contribuição da engenharia de dados para essas respostas:**
 
@@ -683,7 +684,6 @@ pipeline.
 - emissões por consumo para cerca de 120 países;
 - as emissões de uso da terra são estimativas de modelos, com incerteza maior que a das emissões fósseis.
 
-**Todas as 7 perguntas foram respondidas.**
 
 ---
 
@@ -698,13 +698,13 @@ nenhuma. Algumas respostas têm ressalvas, que vêm da cobertura dos dados e est
 
 | Pergunta | Situação | Ressalva |
 |---|---|---|
-| P1 · Maiores emissores | Respondida | — |
-| P2 · Per capita e Brasil | Respondida | Ranking per capita só com países de ≥ 1 milhão de habitantes, para evitar distorção por microterritórios |
-| P3 · Crescer sem emitir | Respondida | Período de 2000 a 2022, porque o PIB só vai até 2022; emissões por consumo para cerca de 120 países |
-| P4 · Transição energética | Respondida | Matriz detalhada por fonte para 79 países; a posição do Brasil (7º) é entre esses 79 |
-| P5 · Energia limpa × intensidade | Respondida | Correlação não prova causalidade; o caso de Singapura mostra um limite do indicador |
-| P6 · Desmatamento no Brasil | Respondida | Emissões de uso da terra são estimativas de modelo, com incerteza maior, e sem abertura por estado ou bioma |
-| P7 · Geografia das emissões | Respondida | — |
+| P1 - Maiores emissores | Respondida | — |
+| P2 - Per capita e Brasil | Respondida | Ranking per capita só com países de ≥ 1 milhão de habitantes, para evitar distorção por microterritórios |
+| P3 - Crescer sem emitir | Respondida | Período de 2000 a 2022, porque o PIB só vai até 2022; emissões por consumo para cerca de 120 países |
+| P4 - Transição energética | Respondida | Matriz detalhada por fonte para 79 países; a posição do Brasil (7º) é entre esses 79 |
+| P5 - Energia limpa × intensidade | Respondida | Correlação não prova causalidade; o caso de Singapura mostra um limite do indicador |
+| P6 - Desmatamento no Brasil | Respondida | Emissões de uso da terra são estimativas de modelo, com incerteza maior, e sem abertura por estado ou bioma |
+| P7 - Geografia das emissões | Respondida | — |
 
 **2. Entregar uma base confiável, consolidada e documentada** para a equipe de análise ESG. O pipeline rodou de ponta a ponta no
 Databricks Free Edition (7 etapas em cerca de 11,5 minutos) e entregou:
