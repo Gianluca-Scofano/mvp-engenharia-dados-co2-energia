@@ -1,6 +1,7 @@
 # Guia de execução no Databricks Free Edition e checklist de evidências
 
-Tempo estimado: **30 minutos**, sendo 10 a 15 minutos de execução automática do pipeline e o restante para os prints.
+Tempo estimado: **20 minutos**, sendo cerca de 12 minutos de execução automática do pipeline (a execução registrada em
+27/09/2026 levou 11,5 minutos) e o restante para preparar o ambiente e exportar as evidências.
 
 ---
 
@@ -34,7 +35,7 @@ Também é possível importar notebook por notebook pela aba **URL**, usando o e
    devem estar com status **OK**.
 
 Abaixo da primeira célula aparece um link **"Notebook job #..."** para cada etapa. Clique nele para abrir a etapa com todas as saídas
-(tabelas, gráficos e testes): é de lá que saem os prints da Parte 3.
+(tabelas, gráficos e testes): é essa página que é exportada em HTML como evidência (Parte 3).
 
 Se preferir, você também pode abrir cada notebook, de `01` a `07`, e usar **Run all** em cada um, na ordem.
 
@@ -55,56 +56,38 @@ Se preferir, você também pode abrir cada notebook, de `01` a `07`, e usar **Ru
 
 ---
 
-## Parte 3 · Prints (salve com **exatamente** estes nomes)
+## Parte 3 · Evidências da execução
 
-As imagens hoje no repositório são *placeholders* ("PRINT PENDENTE"). Os seus prints com o mesmo nome as substituem.
+As evidências vêm de duas fontes:
 
-"Etapa NN" significa a página da etapa aberta pelo link **"Notebook job #..."** do notebook 99, ou o próprio notebook, se você o
-executou manualmente.
+1. **Print da tela do notebook `99`**, com as 7 etapas concluídas e a duração de cada uma.
+2. **Exportações HTML das etapas.** Cada página aberta pelo link **"Notebook job #..."** foi exportada em HTML. Os arquivos estão
+   em [`docs/evidencias/`](evidencias/) e abrem em qualquer navegador (baixe o `.html` e abra localmente). As imagens de
+   `docs/img` mostram as saídas reais das células, extraídas dessas exportações, sem nenhuma alteração nos valores. O e-mail do
+   usuário foi ocultado onde aparecia (caminho dos notebooks).
 
-| Arquivo | Onde tirar | O que precisa aparecer |
+| Imagem | Origem | O que mostra |
 |---|---|---|
-| `11_pipeline_completo.png` | Notebook 99, tabela final | As 7 etapas com status OK e a duração de cada uma |
-| `01_catalogo_schemas.png` | Menu **Catalog** → expandir `mvp_co2_energia` | Os schemas `bronze`, `silver`, `gold` e `governanca` |
-| `02_volume_arquivos.png` | Catalog → `mvp_co2_energia` → `bronze` → Volumes → `arquivos_brutos` | Os 5 arquivos no Volume |
-| `03_controle_ingestao.png` | Etapa 02, seção **4. Log de ingestão** | Tabela com `sha256_confere = true` e `linhas_carregadas` |
-| `04_qualidade_diagnostico.png` | Etapa 03, seção **6** | Tabela "Soma ingênua de todas as linhas" com razão 6,36 |
-| `05_silver_log_transformacoes.png` | Etapa 04, seções **5** e **6** | Log de transformações (linhas antes/depois) e testes OK |
-| `06_gold_testes.png` | Etapa 05, seção **4** | Os 14 testes com status OK |
-| `07_modelo_er.png` | Catalog → `gold` → `fato_energia_fonte` → **View relationships** / *Entity relationship diagram* | Diagrama com as chaves PK/FK ligando fatos e dimensões* |
-| `08_catalogo_comentarios.png` | Catalog → `gold` → `fato_emissoes_anual` → aba **Overview** | Colunas com os comentários (descrição, domínio, origem) |
-| `09_linhagem.png` | Mesma tabela → aba **Lineage** → *See lineage graph* | Grafo bronze → silver → gold |
-| `p1_maiores_emissores.png` | Etapa 07, gráfico da P1 | Barras dos 10 maiores emissores |
-| `p2_per_capita.png` | Etapa 07, gráfico da P2 | Barras per capita com o Brasil em laranja |
-| `p3_desacoplamento.png` | Etapa 07, gráfico da P3 | Dispersão PIB × CO₂ |
-| `p4_transicao_energetica.png` | Etapa 07, gráfico da P4 | Linhas Brasil × Mundo |
-| `p5_baixo_carbono_intensidade.png` | Etapa 07, gráfico da P5 | Dispersão com r = −0,67 no título |
-| `p6_uso_da_terra_brasil.png` | Etapa 07, gráfico da P6 | Linhas de uso da terra × fóssil |
-| `p7_continentes.png` | Etapa 07, gráfico da P7 | Barras 100% por continente |
+| `11_pipeline_completo.png` | Print do notebook `99` | As 7 etapas com status *Succeeded*/OK e a duração de cada uma |
+| `02_volume_arquivos.png` | Etapa 02, seção **1. Coleta dos arquivos para o Volume** | Os 5 arquivos baixados para o Volume, com SHA-256 conferido |
+| `03_controle_ingestao.png` | Etapa 02, seção **4. Log de ingestão** | `governanca.controle_ingestao` com `sha256_confere = true` e `linhas_carregadas` |
+| `04_qualidade_diagnostico.png` | Etapa 03, seção **6. Localidades** | Soma ingênua de todas as linhas com razão 6,36 sobre o Mundo |
+| `05_silver_log_transformacoes.png` | Etapa 04, seções **5** e **6** | Log de transformações (linhas antes/depois) e os 12 testes OK |
+| `06_gold_testes.png` | Etapa 05, seção **4. Testes** | Os 14 testes da gold com status OK |
+| `07_modelo_er.png` | Etapa 05, seção **3. Restrições** | As 22 restrições (PK, FK, NOT NULL e CHECK) aplicadas |
+| `01_catalogo_schemas.png` | Etapa 06, seção **3. Aplicação dos comentários** | 11 tabelas documentadas, 177 colunas e nenhuma sem documentação |
+| `08_catalogo_comentarios.png` | Etapa 06, seção **4. Evidência** | `DESCRIBE TABLE EXTENDED` com os comentários lidos do Unity Catalog |
+| `p1_...` a `p7_...` | Etapa 07, gráfico de cada pergunta | Os gráficos da análise |
 
-\* Se o botão do diagrama não aparecer na sua conta, tire o print da aba **Overview** de `fato_energia_fonte` mostrando a seção de
-*constraints* (primary key e foreign keys).
-
-**Dicas para os prints:**
-
-- No Windows, `Win + Shift + S` recorta uma área da tela.
-- Deixe aparecer o **título da seção** e a **interface do Databricks**. Isso comprova que a execução foi na plataforma de nuvem.
+Prints opcionais do **Catalog Explorer** (menu **Catalog**) complementam as evidências: a árvore do catálogo `mvp_co2_energia`
+com os schemas e a aba **Overview** de `gold.fato_emissoes_anual`, com os comentários das colunas.
 
 ---
 
-## Parte 4 · Subir os prints no GitHub (5 min)
-
-1. No GitHub, abra o repositório → pasta `docs/img` → **Add file → Upload files**.
-2. Arraste todos os PNGs, com os mesmos nomes da tabela acima, para substituir os *placeholders*.
-3. Clique em **Commit changes**.
-4. Abra o `README.md` no GitHub e confira se todas as imagens aparecem.
-
----
-
-## Parte 5 · Revisão final e entrega
+## Parte 4 · Revisão final e entrega
 
 - [ ] O pipeline rodou no Databricks sem erro (7 etapas OK no notebook 99).
-- [ ] Os 17 prints foram substituídos (nenhum "PRINT PENDENTE" no README).
+- [ ] Nenhuma imagem "PRINT PENDENTE" no README (os gráficos da etapa 07 também).
 - [ ] A seção **7. Autoavaliação** do README foi revisada com as suas palavras.
 - [ ] O repositório está **público**.
 - [ ] O link do repositório foi postado no fórum de entrega do MVP.

@@ -17,6 +17,11 @@ menos e qual é a posição do Brasil na transição energética.
 > - O Brasil tem **50,6%** de energia de baixo carbono (7º de 79 países), mas é o **5º maior emissor do mundo** quando o
 >   desmatamento entra na conta: ele responde por **77%** do CO₂ brasileiro.
 
+**Evidências de execução:** o pipeline completo rodou no Databricks Free Edition em 27/09/2026, com as 7 etapas concluídas pelo
+notebook `99` ([print](#4-pipeline-de-dados-etapa-44)). As demais imagens de evidência deste README mostram as saídas reais das
+células, extraídas das exportações HTML dos notebooks executados na plataforma. Os arquivos exportados estão em
+[`docs/evidencias/`](docs/evidencias/) e abrem em qualquer navegador (baixe o `.html` e abra localmente).
+
 ---
 
 ## Sumário
@@ -200,11 +205,13 @@ SHA-256, tamanho, modo de coleta, tabela de destino e linhas carregadas.
 
 **Evidências:**
 
-![Volume com os arquivos brutos](docs/img/02_volume_arquivos.png)
-*Volume `bronze.arquivos_brutos` com os 5 arquivos originais.*
+![Coleta dos arquivos para o Volume](docs/img/02_volume_arquivos.png)
+*Notebook 02 no Databricks: os 5 arquivos baixados das URLs oficiais para o Volume `bronze.arquivos_brutos`, com o SHA-256
+conferido contra a versão fixada.*
 
 ![Log de ingestão](docs/img/03_controle_ingestao.png)
-*Tabela `governanca.controle_ingestao`: SHA-256 conferido e linhas carregadas por arquivo.*
+*Notebook 02: tabela `governanca.controle_ingestao`, com versão de origem, SHA-256 conferido e linhas carregadas em cada tabela
+bronze (`data_ingestao` em UTC).*
 
 ---
 
@@ -386,17 +393,17 @@ Resumo do catálogo da camada gold:
 
 **Evidências no sistema de catálogo (Unity Catalog):**
 
-![Catálogo e schemas](docs/img/01_catalogo_schemas.png)
-*Catálogo `mvp_co2_energia` com os schemas `bronze`, `silver`, `gold` e `governanca`.*
+![Tabelas documentadas no Unity Catalog](docs/img/01_catalogo_schemas.png)
+*Notebook 06 no Databricks: comentários aplicados às tabelas dos schemas `silver`, `gold` e `governanca` do catálogo
+`mvp_co2_energia`, com o total de colunas e linhas de cada tabela: 177 colunas documentadas, nenhuma sem documentação.*
 
-![Comentários das colunas no Catalog Explorer](docs/img/08_catalogo_comentarios.png)
-*Descrição, domínio e origem de cada coluna gravados como comentários no Unity Catalog.*
+![Comentários das colunas lidos do Unity Catalog](docs/img/08_catalogo_comentarios.png)
+*Notebook 06: `DESCRIBE TABLE EXTENDED` de `gold.fato_emissoes_anual` lê de volta do Unity Catalog os comentários gravados, com
+descrição, domínio e origem de cada coluna (primeiras 10 das 54 linhas da saída).*
 
-![Diagrama entidade-relacionamento](docs/img/07_modelo_er.png)
-*Chaves primárias e estrangeiras do modelo gold no Catalog Explorer.*
-
-![Linhagem](docs/img/09_linhagem.png)
-*Linhagem registrada automaticamente pelo Unity Catalog: bronze → silver → gold.*
+![Restrições do modelo gold](docs/img/07_modelo_er.png)
+*Notebook 05 no Databricks: chaves primárias e estrangeiras (Unity Catalog), NOT NULL e CHECK (Delta Lake) aplicadas às tabelas
+do modelo gold, todas com situação ok.*
 
 ---
 
@@ -443,14 +450,17 @@ Os notebooks exibem a contagem de linhas antes e depois de cada etapa (log de tr
 
 **Evidências de que as tabelas foram persistidas na nuvem:**
 
-![Tabelas silver e log de transformações](docs/img/05_silver_log_transformacoes.png)
-*Notebook 04: log das transformações (linhas antes/depois) e testes da silver.*
+![Log de transformações e testes da silver](docs/img/05_silver_log_transformacoes.png)
+*Notebook 04 no Databricks: log das transformações (linhas antes e depois de cada etapa) e os 12 testes da camada silver com
+status OK.*
 
-![Tabelas gold e testes](docs/img/06_gold_testes.png)
-*Notebook 05: tabelas gold criadas, restrições aplicadas e testes de integridade/reconciliação.*
+![Testes da gold](docs/img/06_gold_testes.png)
+*Notebook 05 no Databricks: os 14 testes da camada gold (unicidade, integridade referencial, completude e reconciliação com os
+totais publicados pela OWID) com status OK.*
 
 ![Pipeline completo](docs/img/11_pipeline_completo.png)
-*Notebook 99: pipeline completo (01 → 07) executado em sequência no Databricks, com status e duração de cada etapa.*
+*Notebook 99 no Databricks (print da tela): pipeline completo (01 → 07) executado em sequência, com status e duração de cada
+etapa. O e-mail do usuário foi ocultado no caminho dos notebooks.*
 
 ---
 
@@ -493,7 +503,8 @@ Todos os resultados ficam registrados na tabela `governanca.resultados_qualidade
   **0,0009%**, ano a ano, desde 1950.
 
 ![Diagnóstico de qualidade](docs/img/04_qualidade_diagnostico.png)
-*Notebook 03: a soma ingênua das linhas dá 6,36× o total mundial; separados os agregados, as partes somam o todo.*
+*Notebook 03 no Databricks: a soma ingênua das linhas dá 6,36× o total mundial. Só os países com código ISO, mais o transporte
+internacional, já chegam a 99,98% do Mundo; a diferença de 8 Mt é o Kosovo, que não tem código ISO e é tratado na silver.*
 
 ---
 
@@ -729,7 +740,7 @@ o total mundial com desvio de 0,0009%, e os continentes batem 100% com os agrega
      e rode o `02` de novo.
    - Se o workspace não permitir criar catálogos, troque `CATALOGO = "workspace"` em `00_configuracao`.
 
-O guia detalhado, com a lista de evidências (prints), está em [`docs/guia_execucao_databricks.md`](docs/guia_execucao_databricks.md).
+O guia detalhado, com a origem de cada evidência, está em [`docs/guia_execucao_databricks.md`](docs/guia_execucao_databricks.md).
 
 ### Estrutura do repositório
 
@@ -747,8 +758,9 @@ O guia detalhado, com a lista de evidências (prints), está em [`docs/guia_exec
 │   └── 99_executar_pipeline_completo.py
 └── docs/
     ├── catalogo_dados.md              ← catálogo de dados completo (transcrito do Unity Catalog)
-    ├── guia_execucao_databricks.md    ← passo a passo de execução e checklist de evidências
-    └── img/                           ← prints do Databricks
+    ├── guia_execucao_databricks.md    ← passo a passo de execução e origem das evidências
+    ├── evidencias/                    ← exportações HTML dos notebooks executados no Databricks
+    └── img/                           ← evidências (print do notebook 99 e saídas extraídas das exportações)
 ```
 
 ---
