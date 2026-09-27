@@ -717,8 +717,9 @@ o total mundial com desvio de 0,0009%, e os continentes batem 100% com os agrega
 ## Como reproduzir no Databricks
 
 1. **Criar a conta:** crie uma conta gratuita no [Databricks Free Edition](https://www.databricks.com/learn/free-edition).
-2. **Conectar o repositório:** em **Workspace → Create → Git folder**, cole a URL deste repositório. Por ser público, ele não precisa
-   de credenciais para o clone.
+2. **Conectar o repositório:** na sua pasta **Home**, use **Create → Git folder** e cole a URL deste repositório. Por ser público,
+   ele não precisa de credenciais para o clone. Se a opção *Git folder* não existir na conta, importe os notebooks com
+   **Home → Import** (ZIP com os arquivos da pasta `notebooks`), mantendo-os na mesma pasta.
 3. **Executar o pipeline:** abra `notebooks/99_executar_pipeline_completo` e use **Run all** (computação *Serverless*). Ele roda
    as etapas `01` a `07` em sequência. Também é possível abrir cada notebook e usar **Run all** na ordem `01_setup_ambiente` →
    `02_coleta_bronze` → `03_qualidade_diagnostico` → `04_transformacao_silver` → `05_modelagem_gold` → `06_catalogo_dados` →

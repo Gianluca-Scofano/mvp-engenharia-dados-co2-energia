@@ -14,6 +14,16 @@ Tempo estimado: **30 minutos**, sendo 10 a 15 minutos de execução automática 
    - Clique em **Create Git folder**. O repositório é público, então não é preciso configurar credenciais para clonar.
 3. Abra a pasta `notebooks` dentro da Git folder.
 
+**Se a opção "Git folder" não aparecer na sua conta**, importe os notebooks:
+
+1. Baixe o ZIP do repositório no GitHub (**Code → Download ZIP**) e extraia a pasta `notebooks`, ou use um ZIP que contenha só os
+   arquivos `.py` da pasta `notebooks`.
+2. No Databricks, clique com o botão direito em **Home** → **Import** → aba **File**, arraste o ZIP e clique em **Import**.
+3. Os notebooks aparecem juntos em uma pasta. Eles precisam ficar na mesma pasta, porque cada um executa `%run ./00_configuracao`.
+
+Também é possível importar notebook por notebook pela aba **URL**, usando o endereço *raw* de cada arquivo, por exemplo
+`https://raw.githubusercontent.com/Gianluca-Scofano/mvp-engenharia-dados-co2-energia/main/notebooks/00_configuracao.py`.
+
 ---
 
 ## Parte 2 · Executar o pipeline com um clique (10–15 min)
